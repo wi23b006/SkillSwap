@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SkillSwap Skills Test</title>
+</head>
+<body>
+
+    <h2>Add a Skill</h2>
+
+    <form action="../backend/skills.php" method="POST">
+
+        <label for="skill_id">Skill ID:</label>
+        <input type="number" id="skill_id" name="skill_id" required>
+
+        <br><br>
+
+        <label for="skill_type">Skill Type:</label>
+        <select id="skill_type" name="skill_type">
+            <option value="offered">Offered</option>
+            <option value="wanted">Wanted</option>
+        </select>
+
+        <br><br>
+
+        <button type="submit">Save Skill</button>
+
+    </form>
+
+</body>
+</html>

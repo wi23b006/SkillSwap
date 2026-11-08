@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SkillSwap Registration Test</title>
+</head>
+<body>
+
+    <h2>SkillSwap Registration</h2>
+
+    <form action="../backend/registrieren.php" method="POST">
+
+        <label>Email:</label>
+        <input type="email" name="email" required>
+
+        <br><br>
+
+        <label>Password:</label>
+        <input type="password" name="password" required>
+
+        <br><br>
+
+        <label>
+            <input type="checkbox" name="privacy_accepted" value="1" required>
+            I agree to the draft privacy notice (testing only)
+        </label>
+
+        <br><br>
+
+        <button type="submit">Register</button>
+
+    </form>
+
+</body>
+</html>
