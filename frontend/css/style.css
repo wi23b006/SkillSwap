@@ -1,0 +1,92 @@
+/* SkillSwap theme
+   Neutral Bootstrap base + two colors with a fixed meaning:
+   turquoise = skills I can offer   
+   violet = skills I want to learn */
+
+:root {
+    --offered: #0F766E;
+    --offered-text: #0B5D57;
+    --offered-bg: #E3F3EF;
+    --offered-border: #B9E0D7;
+
+    --wanted: #6D28D9;
+    --wanted-text: #5B21B6;
+    --wanted-bg: #F1EAFD;
+    --wanted-border: #DCCDF8;
+}
+
+body {
+    font-family: "Inter", system-ui, sans-serif;
+}
+
+/* softer cards */
+.card {
+    --bs-card-border-radius: 12px;
+    --bs-card-border-color: #E3E6EA;
+}
+
+/* skill chips on the profile page */
+.chip {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid;
+    border-radius: 999px;
+    font-weight: 500;
+}
+
+.chip-offered {
+    color: var(--offered-text);
+    background: var(--offered-bg);
+    border-color: var(--offered-border);
+}
+
+.chip-wanted {
+    color: var(--wanted-text);
+    background: var(--wanted-bg);
+    border-color: var(--wanted-border);
+}
+
+/* + Add skill" buttons*/
+.btn-offered {
+    --bs-btn-color: var(--offered-text);
+    --bs-btn-border-color: var(--offered);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--offered);
+    --bs-btn-hover-border-color: var(--offered);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--offered);
+}
+
+.btn-wanted {
+    --bs-btn-color: var(--wanted-text);
+    --bs-btn-border-color: var(--wanted);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--wanted);
+    --bs-btn-hover-border-color: var(--wanted);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--wanted);
+}
+
+/* selected radio button */
+.radio-offered:checked { background-color: var(--offered); border-color: var(--offered); }
+.radio-wanted:checked  { background-color: var(--wanted); border-color: var(--wanted); }
+
+/* colored dot in front of section titles */
+.dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+    border-radius: 50%;
+}
+
+.dot-offered { background: var(--offered); }
+.dot-wanted  { background: var(--wanted); }
+
+/* "SkillSwap" in the start page heading */
+.logo-skill { color: var(--offered-text); }
+.logo-swap  { color: var(--wanted-text); }
+
+/* error messages*/
+.form-error { display: none; }
+.form-error:target { display: block; }
