@@ -26,10 +26,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION["user_id"] = $user["id"];
         $_SESSION["user_role"] = $user["user_role"];
 
-        echo "Login successful!";
+        // weiter zum profil
+        header("Location: ../frontend/profil.php");
+        exit;
 
     } else {
-        echo "Invalid email or password";
+        // back to login, the error message is shown there
+        header("Location: ../frontend/login.html#login-error");
+        exit;
     }
 
     $stmt->close();

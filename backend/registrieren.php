@@ -1,8 +1,12 @@
-
 <?php
 
 require "datenbank.php";
 
+// zurück zur registrierung
+function back_with_error($id) {
+    header("Location: ../frontend/registrierung.html#" . $id);
+    exit;
+}
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $email = trim($_POST["email"] ?? "");
@@ -15,11 +19,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if (strlen($password) < 8) {
-        die("Password must have at least 8 characters");
+        back_with_error("reg-error");
+    }
+
+   / beide passwörter müssen gleich sein
+    if ($password !== ($_POST["password_confirm"] ?? "")) {
+        back_with_error("reg-password-mismatch");
     }
 
     if ($privacy != "1") {
-        die("Privacy consent is required");
+        back_with_error("reg-error");
     }
 
     // password hashen
@@ -36,15 +45,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     try {
         $stmt->execute();
-        echo "Registration successful!";
-    } catch (mysqli_sql_exception $e) {
+
+        // weiter zum login
+        header("Location: ../frontend/login.html#registered");
+        exit;
+     } catch (mysqli_sql_exception $e) {
         if ($e->getCode() == 1062) {
-            echo "Email already registered";
+            back_with_error("reg-email-taken");
         } else {
             error_log($e->getMessage());
-            echo "Registration failed";
+            back_with_error("reg-error");
         }
     }
-
-    $stmt->close();
 }

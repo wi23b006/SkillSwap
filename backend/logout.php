@@ -8,4 +8,6 @@ $_SESSION = [];
 // session löschen
 session_destroy();
 
-echo "Logout successful!";
+// zurück zum login
+header("Location: ../frontend/login.html");
+exit;

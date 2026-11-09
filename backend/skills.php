@@ -38,14 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iis", $user_id, $skill_id, $skill_type);
     $stmt->execute();
-
-    if ($stmt->affected_rows == 1) {
-        echo "Skill saved successfully!";
-    } else {
-        echo "Skill already selected";
-    }
-
     $stmt->close();
+
+    // zurück zum profil (skill ist jetzt dort als chip sichtbar)
+    header("Location: ../frontend/profil.php");
+    exit;
 
 } else {
 

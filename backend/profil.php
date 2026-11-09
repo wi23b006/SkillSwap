@@ -39,8 +39,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("issss", $user_id, $name, $bio, $city, $email);
 
     $stmt->execute();
-
-    echo "Profile saved successfully!";
-
     $stmt->close();
+
+    // zurück zum profil
+    header("Location: ../frontend/profil.php");
+    exit;
 }
