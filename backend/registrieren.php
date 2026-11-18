@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         back_with_error("reg-error");
     }
 
-   / beide passwörter müssen gleich sein
+   // beide passwörter müssen gleich sein
     if ($password !== ($_POST["password_confirm"] ?? "")) {
         back_with_error("reg-password-mismatch");
     }
