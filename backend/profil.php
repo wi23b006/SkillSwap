@@ -1,9 +1,10 @@
+
 <?php
 
 session_start();
 require "datenbank.php";
 
-// check ob user logged in ist
+// check if the user is logged in
 if (!isset($_SESSION["user_id"])) {
     die("Please log in first");
 }
@@ -14,34 +15,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST["display_name"] ?? "");
     $bio = trim($_POST["bio"] ?? "");
     $city = trim($_POST["city"] ?? "");
-    $email = trim($_POST["contact_email"] ?? "");
 
-    // check input
+    // check the display name
     if ($name == "" || strlen($name) > 100) {
         die("Please enter a valid display name");
     }
 
-    if ($email != "" && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        die("Invalid contact email");
-    }
-
-    // profil in der datenbank speichern oder aktualisieren
+    // save or update the profile
     $sql = "INSERT INTO profiles
-            (user_id, display_name, bio, city, contact_email)
-            VALUES (?, ?, ?, ?, ?)
+            (user_id, display_name, bio, city)
+            VALUES (?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
             display_name = VALUES(display_name),
             bio = VALUES(bio),
-            city = VALUES(city),
-            contact_email = VALUES(contact_email)";
+            city = VALUES(city)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("issss", $user_id, $name, $bio, $city, $email);
+    $stmt->bind_param("isss", $user_id, $name, $bio, $city);
 
     $stmt->execute();
     $stmt->close();
 
-    // zurück zum profil
+    // return to profile
     header("Location: ../frontend/profil.php");
     exit;
 }
