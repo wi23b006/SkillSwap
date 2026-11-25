@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 require "../backend/datenbank.php";
 
@@ -8,15 +9,13 @@ if (!isset($_SESSION["user_id"])) {
     exit;
 }
 
-// backend or example data, till backend is connected 
-$example = !file_exists("../backend/chat.php");
-require $example ? "beispieldaten.php" : "../backend/chat.php";
+// load real matches from the database
+require "../backend/matches.php";
 
-// active link in the navbar
 $page = "chats";
 
-// all my matches
 $matches = get_matches($conn, $_SESSION["user_id"]);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,16 +35,9 @@ $matches = get_matches($conn, $_SESSION["user_id"]);
         <div class="col-lg-8 mx-auto">
 
             <h1 class="fw-semibold">My matches</h1>
-            <p class="text-body-secondary mb-4">Choose a match to start chatting.</p>
-
-            <!-- the chat does not exist or belongs to other users -->
-            <div id="chat-error" class="alert alert-danger form-error" role="alert">
-                This chat is not available.
-            </div>
-
-            <?php if ($example): ?>
-                <div class="alert alert-secondary">TEST data, the chat backend is not connected yet.</div>
-            <?php endif; ?>
+            <p class="text-body-secondary mb-4">
+                Your mutual matches. Chat will be available soon.
+            </p>
 
             <div class="card overflow-hidden">
 
@@ -53,23 +45,42 @@ $matches = get_matches($conn, $_SESSION["user_id"]);
                 <?php if (count($matches) == 0): ?>
                     <div class="card-body p-5 text-center">
                         <h2 class="h4">No matches yet</h2>
-                        <p class="text-body-secondary">Like someone. If they like you too, your chat opens here.</p>
-                        <a href="match.php" class="btn btn-dark">Discover people</a>
+                        <p class="text-body-secondary">
+                            Like someone. If they like you too, they will appear here.
+                        </p>
+                        <a href="match.php" class="btn btn-dark">
+                            Discover people
+                        </a>
                     </div>
                 <?php endif; ?>
 
-                <!-- one row for each match -->
+                <!-- show real matches -->
                 <?php foreach ($matches as $match): ?>
-                    <a class="chat-link" href="chat.php?match=<?= $match["id"] ?>">
-                        <span class="d-flex align-items-center gap-3">
-                            <span class="avatar" aria-hidden="true"><?= htmlspecialchars(mb_substr($match["display_name"], 0, 1)) ?></span>
-                            <span class="flex-grow-1 text-break">
-                                <span class="d-block fw-semibold"><?= htmlspecialchars($match["display_name"]) ?></span>
-                                <span class="d-block text-body-secondary small">Matched on <?= date("d M Y", strtotime($match["created_at"])) ?></span>
-                            </span>
-                            <span class="text-body-secondary" aria-hidden="true">›</span>
+
+                    <div class="p-4 border-bottom d-flex align-items-center gap-3">
+
+                        <span class="avatar" aria-hidden="true">
+                            <?= htmlspecialchars(mb_substr($match["display_name"], 0, 1)) ?>
                         </span>
-                    </a>
+
+                        <span class="flex-grow-1 text-break">
+
+                            <span class="d-block fw-semibold">
+                                <?= htmlspecialchars($match["display_name"]) ?>
+                            </span>
+
+                            <span class="d-block text-body-secondary small">
+                                Matched on <?= date("d M Y", strtotime($match["created_at"])) ?>
+                            </span>
+
+                        </span>
+
+                        <span class="badge text-bg-light border">
+                            Chat coming soon
+                        </span>
+
+                    </div>
+
                 <?php endforeach; ?>
 
             </div>
