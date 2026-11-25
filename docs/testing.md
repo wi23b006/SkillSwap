@@ -89,3 +89,31 @@ Conclusion:
 Our basic backend features are working locally. We will continue testing new features, fixing bugs and improving our tests as we develop SkillSwap.
 
 Sprint 3 Tests
+
+Accessibility Testing (Task #77)
+
+Date: 25 November 2026
+
+Tool: Google Chrome Lighthouse (Desktop)
+
+Pages tested:
+- Discover: 100/100
+- My Profile: 100/100
+- My Matches: 100/100
+
+Manual tests:
+- Keyboard navigation with Tab and Shift + Tab: Passed
+- Visible keyboard focus: Passed
+- Profile form and skill selection with keyboard: Passed
+- Browser zoom at 200%: Passed
+- No overlapping or cut-off elements observed
+
+Result:
+All three tested pages passed our basic accessibility
+checks. Lighthouse reported no automatic accessibility
+issues.
+
+(Note:
+These tests do not guarantee full WCAG compliance.
+The chat screens still need to be tested after integration.
+)
