@@ -1,4 +1,4 @@
-Testing – SkillSwap
+Testing for SkillSwap
 
 
 
@@ -7,7 +7,6 @@ Overview
 
 
 We test SkillSwap to make sure our features work properly and to find bugs early. For now, we mainly test manually using XAMPP, phpMyAdmin and our browser.
-
 
 
 
@@ -85,8 +84,8 @@ In Sprint 3, we will focus on testing the matching system, Like/Pass decisions a
 We also want to add some basic automated tests later, so we don't have to test everything manually after every change.
 
 
-
 Conclusion:
 
 Our basic backend features are working locally. We will continue testing new features, fixing bugs and improving our tests as we develop SkillSwap.
 
+Sprint 3 Tests

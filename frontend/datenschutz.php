@@ -1,25 +1,33 @@
+<?php
+session_start();
+
+$page = "";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Privacy policy – SkillSwap</title>
+    <title>Privacy policy - SkillSwap</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
-<body class="bg-body-tertiary">
+<body class="bg-body-tertiary d-flex flex-column min-vh-100">
 
+    <?php if (isset($_SESSION["user_id"])): ?>
+        <?php require "navbar.php"; ?>
+    <?php else: ?>
     <!-- navigation -->
     <nav class="navbar bg-white border-bottom">
         <div class="container">
             <a class="navbar-brand fw-semibold fs-4" href="index.html"> SkillSwap</a>
             <div class="d-flex gap-4">
                 <a class="nav-link" href="login.html">Log in</a>
-                <a class="nav-link" href="datenschutz.html">Privacy policy</a>
             </div>
         </div>
     </nav>
+    <?php endif; ?>
 
     <!-- draft privacy notice (version draft) -->
     <main class="container py-5">
@@ -45,6 +53,8 @@
             </div>
         </div>
     </main>
+
+    <?php require "footer.php"; ?>
 
 </body>
 </html>

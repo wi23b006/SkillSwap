@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
-<body class="bg-body-tertiary">
+<body class="bg-body-tertiary d-flex flex-column min-vh-100">
 
     <!-- navigation -->
     <nav class="navbar bg-white border-bottom">
@@ -16,7 +16,6 @@
             <a class="navbar-brand fw-semibold fs-4" href="index.html"> SkillSwap</a>
             <div class="d-flex gap-4">
                 <a class="nav-link" href="registrierung.html">Sign up</a>
-                <a class="nav-link" href="datenschutz.html">Privacy policy</a>
             </div>
         </div>
     </nav>
@@ -33,6 +32,11 @@
                     Account created! You can log in now.
                 </div>
 
+                <!-- shown when a page needs a login -->
+                <div id="login-required" class="alert alert-info form-error" role="alert">
+                    Please log in first.
+                </div>
+
                 <!-- shown when error-->
                 <div id="login-error" class="alert alert-danger form-error" role="alert">
                     Invalid email or password. Please try again.
@@ -43,12 +47,12 @@
 
                     <div class="mb-3">
                         <label for="email" class="form-label fw-semibold">Email address</label>
-                        <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" autocomplete="email" required>
                     </div>
 
                     <div class="mb-4">
                         <label for="password" class="form-label fw-semibold">Password</label>
-                        <input type="password" id="password" name="password" class="form-control" required>
+                        <input type="password" id="password" name="password" class="form-control" autocomplete="current-password" required>
                     </div>
 
                     <button type="submit" class="btn btn-dark w-100 py-2">Log in</button>
@@ -61,6 +65,14 @@
             </div>
         </div>
     </main>
+
+    <!-- footer -->
+    <footer class="bg-white border-top mt-auto">
+        <div class="container d-flex flex-wrap justify-content-between gap-3 py-4 small text-body-secondary">
+            <span>&copy; SkillSwap</span>
+            <a href="datenschutz.php">Privacy policy</a>
+        </div>
+    </footer>
 
 </body>
 </html>

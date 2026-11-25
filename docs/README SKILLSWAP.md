@@ -86,7 +86,7 @@ SkillSwap/
 
 In this repo:
 
-* [docs/architecture.md](docs/architecture.md) – how the app is built and what we store
+* [docs/architecture.md](docs/architecture.md) how the app is built and what we store
 * [docs/decisions.md](docs/decisions.md) – the bigger decisions we made and why
 * [docs/testing.md](docs/testing.md) – test cases and results
 

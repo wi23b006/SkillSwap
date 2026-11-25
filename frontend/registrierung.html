@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
-<body class="bg-body-tertiary">
+<body class="bg-body-tertiary d-flex flex-column min-vh-100">
 
     <!-- navigation -->
     <nav class="navbar bg-white border-bottom">
@@ -16,7 +16,6 @@
             <a class="navbar-brand fw-semibold fs-4" href="index.html"> SkillSwap</a>
             <div class="d-flex gap-4">
                 <a class="nav-link" href="login.html">Log in</a>
-                <a class="nav-link" href="datenschutz.html">Privacy policy</a>
             </div>
         </div>
     </nav>
@@ -28,7 +27,7 @@
                 <h1 class="h3 fw-semibold">Create your SkillSwap account</h1>
                 <p class="text-body-secondary mb-4">Connect with people who teach what you want to learn.</p>
 
-                 <!-- error messages -->
+                <!-- error messages -->
                 <div id="reg-password-mismatch" class="alert alert-danger form-error" role="alert">
                     The passwords do not match. Please try again.
                 </div>
@@ -44,25 +43,26 @@
 
                     <div class="mb-3">
                         <label for="email" class="form-label fw-semibold">Email address</label>
-                        <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" maxlength="255" autocomplete="email"
+                               pattern="[^@\s]+@[^@\s]+\.[A-Za-z]{2,}" title="Please enter a full email address, e.g. you@example.com" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="password" class="form-label fw-semibold">Password</label>
-                        <input type="password" id="password" name="password" class="form-control" minlength="8" required>
+                        <input type="password" id="password" name="password" class="form-control" minlength="8" autocomplete="new-password" required>
                         <div class="form-text">At least 8 characters.</div>
                     </div>
 
                     <div class="mb-4">
                         <label for="password_confirm" class="form-label fw-semibold">Confirm password</label>
-                        <input type="password" id="password_confirm" name="password_confirm" class="form-control" minlength="8" required>
+                        <input type="password" id="password_confirm" name="password_confirm" class="form-control" minlength="8" autocomplete="new-password" required>
                     </div>
 
                     <div class="form-check mb-4">
                         <input type="checkbox" id="privacy" name="privacy_accepted" value="1" class="form-check-input" required>
                         <label for="privacy" class="form-check-label">
                             I agree to the processing of my data as described in the
-                            <a href="datenschutz.html">privacy notice</a>
+                            <a href="datenschutz.php">privacy notice</a>
                         </label>
                     </div>
 
@@ -76,6 +76,14 @@
             </div>
         </div>
     </main>
+
+    <!-- footer -->
+    <footer class="bg-white border-top mt-auto">
+        <div class="container d-flex flex-wrap justify-content-between gap-3 py-4 small text-body-secondary">
+            <span>&copy; SkillSwap</span>
+            <a href="datenschutz.php">Privacy policy</a>
+        </div>
+    </footer>
 
 </body>
 </html>
