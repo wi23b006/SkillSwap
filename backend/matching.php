@@ -1,6 +1,8 @@
 
 <?php
 
+require_once __DIR__ . "/geo.php";
+
 function get_suggestions($conn, $user_id) {
 
     // find users with matching skills
@@ -52,11 +54,36 @@ function get_suggestions($conn, $user_id) {
     $people = array_values($people);
 
     // get my city
-    $stmt = $conn->prepare("SELECT city FROM profiles WHERE user_id = ?");
+    $stmt = $conn->prepare(
+        "SELECT city FROM profiles WHERE user_id = ?"
+    );
+
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
 
     $my_city = $stmt->get_result()->fetch_assoc()["city"] ?? "";
+
+    // calculate distance to each user
+    $my_coordinates = get_city_coordinates($conn, $my_city);
+
+    foreach ($people as $i => $person) {
+
+        $other_coordinates = get_city_coordinates(
+            $conn,
+            $person["city"] ?? ""
+        );
+
+        if ($my_coordinates && $other_coordinates) {
+
+            $people[$i]["distance_km"] = calculate_distance(
+                $my_coordinates,
+                $other_coordinates
+            );
+
+        } else {
+            $people[$i]["distance_km"] = null;
+        }
+    }
 
     // check if both users can teach each other
     foreach ($people as $i => $person) {

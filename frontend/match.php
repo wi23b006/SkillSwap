@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 require "../backend/datenbank.php";
@@ -8,7 +9,7 @@ if (!isset($_SESSION["user_id"])) {
     exit;
 }
 
-// backend or example data, till backend is connected 
+// backend or example data, till backend is connected
 $example = !file_exists("../backend/matching.php");
 require $example ? "beispieldaten.php" : "../backend/matching.php";
 
@@ -74,11 +75,12 @@ try {
 
         <?php if (count($people) > 0): ?>
             <?php
-            // the first person is shown big, the others are shown in the up next window a little smaller
+            // show the first person big and the others under up next
             $person = $people[0];
             $next_people = array_slice($people, 1);
             $name = htmlspecialchars($person["display_name"]);
             ?>
+
             <div class="row g-4">
 
                 <!-- left: number of suggestions and how it works -->
@@ -106,32 +108,62 @@ try {
                         <div class="card-body p-4 p-md-5">
 
                             <div class="d-flex align-items-center gap-3 mb-4">
-                                <span class="avatar" aria-hidden="true"><?= htmlspecialchars(mb_substr($person["display_name"], 0, 1)) ?></span>
+
+                                <span class="avatar" aria-hidden="true">
+                                    <?= htmlspecialchars(mb_substr($person["display_name"], 0, 1)) ?>
+                                </span>
+
                                 <div>
                                     <h2 class="h4 mb-0 text-break"><?= $name ?></h2>
+
                                     <?php if (!empty($person["city"])): ?>
-                                        <p class="text-body-secondary mb-0 text-break">City: <?= htmlspecialchars($person["city"]) ?></p>
+                                        <p class="text-body-secondary mb-0 text-break">
+                                            City: <?= htmlspecialchars($person["city"]) ?>
+                                        </p>
+                                    <?php endif; ?>
+
+                                    <!-- distance between users -->
+                                    <?php if (isset($person["distance_km"])): ?>
+                                        <p class="text-body-secondary mb-0">
+
+                                            <?php if ($person["distance_km"] == 0): ?>
+                                                Same city
+                                            <?php else: ?>
+                                                Approx. <?= (int)$person["distance_km"] ?> km away (straight line)
+                                            <?php endif; ?>
+
+                                        </p>
                                     <?php endif; ?>
                                 </div>
                             </div>
 
                             <?php if (!empty($person["bio"])): ?>
-                                <p class="text-break mb-4">About: <?= nl2br(htmlspecialchars($person["bio"])) ?></p>
+                                <p class="text-break mb-4">
+                                    About: <?= nl2br(htmlspecialchars($person["bio"])) ?>
+                                </p>
                             <?php endif; ?>
 
                             <p class="text-body-secondary mb-2">Skill compatibility</p>
 
                             <!-- blue = offered -->
                             <div class="bg-body-tertiary rounded-3 p-3 mb-3">
-                                <h3 class="h6 text-break"><span class="dot dot-offered"></span><?= $name ?> offers <span aria-hidden="true">→</span> You want</h3>
+                                <h3 class="h6 text-break">
+                                    <span class="dot dot-offered"></span><?= $name ?> offers
+                                    <span aria-hidden="true">→</span> You want
+                                </h3>
+
                                 <div class="d-flex flex-wrap gap-2">
                                     <?php $count = 0; ?>
+
                                     <?php foreach ($person["skills"] as $skill): ?>
                                         <?php if ($skill["skill_type"] == "offered"): ?>
                                             <?php $count++; ?>
-                                            <span class="chip chip-small chip-offered"><?= htmlspecialchars($skill["name"]) ?></span>
+                                            <span class="chip chip-small chip-offered">
+                                                <?= htmlspecialchars($skill["name"]) ?>
+                                            </span>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
+
                                     <?php if ($count == 0): ?>
                                         <span class="text-body-secondary small">No fitting skill</span>
                                     <?php endif; ?>
@@ -140,15 +172,23 @@ try {
 
                             <!-- orange = wanted -->
                             <div class="bg-body-tertiary rounded-3 p-3 mb-4">
-                                <h3 class="h6 text-break"><span class="dot dot-wanted"></span>You offer <span aria-hidden="true">→</span> <?= $name ?> wants</h3>
+                                <h3 class="h6 text-break">
+                                    <span class="dot dot-wanted"></span>You offer
+                                    <span aria-hidden="true">→</span> <?= $name ?> wants
+                                </h3>
+
                                 <div class="d-flex flex-wrap gap-2">
                                     <?php $count = 0; ?>
+
                                     <?php foreach ($person["skills"] as $skill): ?>
                                         <?php if ($skill["skill_type"] == "wanted"): ?>
                                             <?php $count++; ?>
-                                            <span class="chip chip-small chip-wanted"><?= htmlspecialchars($skill["name"]) ?></span>
+                                            <span class="chip chip-small chip-wanted">
+                                                <?= htmlspecialchars($skill["name"]) ?>
+                                            </span>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
+
                                     <?php if ($count == 0): ?>
                                         <span class="text-body-secondary small">No fitting skill</span>
                                     <?php endif; ?>
@@ -157,9 +197,26 @@ try {
 
                             <!-- sends like or pass to the backend -->
                             <form action="../backend/entscheidung.php" method="POST" class="d-flex gap-3">
+
                                 <input type="hidden" name="user_id" value="<?= $person["user_id"] ?>">
-                                <button type="submit" name="decision" value="pass" class="btn btn-outline-dark w-50 py-3" aria-label="Pass <?= $name ?>" <?= $example ? "disabled" : "" ?>>Pass</button>
-                                <button type="submit" name="decision" value="like" class="btn btn-dark w-50 py-3" aria-label="Like <?= $name ?>" <?= $example ? "disabled" : "" ?>>Like</button>
+
+                                <button type="submit"
+                                        name="decision"
+                                        value="pass"
+                                        class="btn btn-outline-dark w-50 py-3"
+                                        aria-label="Pass <?= $name ?>"
+                                        <?= $example ? "disabled" : "" ?>>
+                                    Pass
+                                </button>
+
+                                <button type="submit"
+                                        name="decision"
+                                        value="like"
+                                        class="btn btn-dark w-50 py-3"
+                                        aria-label="Like <?= $name ?>"
+                                        <?= $example ? "disabled" : "" ?>>
+                                    Like
+                                </button>
                             </form>
 
                         </div>
@@ -170,6 +227,7 @@ try {
                 <div class="col-lg-3 order-3">
                     <div class="card">
                         <div class="card-body p-4">
+
                             <h2 class="h5 mb-3">Up next</h2>
 
                             <?php if (count($next_people) == 0): ?>
@@ -177,15 +235,42 @@ try {
                             <?php endif; ?>
 
                             <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+
                                 <?php foreach ($next_people as $next): ?>
                                     <li class="d-flex align-items-center gap-3">
-                                        <span class="avatar" aria-hidden="true"><?= htmlspecialchars(mb_substr($next["display_name"], 0, 1)) ?></span>
+
+                                        <span class="avatar" aria-hidden="true">
+                                            <?= htmlspecialchars(mb_substr($next["display_name"], 0, 1)) ?>
+                                        </span>
+
                                         <span class="text-break">
-                                            <span class="d-block fw-semibold"><?= htmlspecialchars($next["display_name"]) ?></span>
-                                            <span class="d-block text-body-secondary small"><?= count($next["skills"]) ?> fitting <?= count($next["skills"]) == 1 ? "skill" : "skills" ?></span>
+
+                                            <span class="d-block fw-semibold">
+                                                <?= htmlspecialchars($next["display_name"]) ?>
+                                            </span>
+
+                                            <span class="d-block text-body-secondary small">
+                                                <?= count($next["skills"]) ?> fitting
+                                                <?= count($next["skills"]) == 1 ? "skill" : "skills" ?>
+                                            </span>
+
+                                            <!-- distance for up next users -->
+                                            <?php if (isset($next["distance_km"])): ?>
+                                                <span class="d-block text-body-secondary small">
+
+                                                    <?php if ($next["distance_km"] == 0): ?>
+                                                        Same city
+                                                    <?php else: ?>
+                                                        Approx. <?= (int)$next["distance_km"] ?> km away
+                                                    <?php endif; ?>
+
+                                                </span>
+                                            <?php endif; ?>
+
                                         </span>
                                     </li>
                                 <?php endforeach; ?>
+
                             </ul>
                         </div>
                     </div>

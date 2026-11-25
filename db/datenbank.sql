@@ -1,3 +1,4 @@
+
 CREATE DATABASE IF NOT EXISTS skillswap;
 USE skillswap;
 
@@ -101,4 +102,11 @@ CREATE TABLE IF NOT EXISTS favorites (
     FOREIGN KEY (favorite_user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE (user_id, favorite_user_id),
     CHECK (user_id <> favorite_user_id)
+);
+
+-- store city coordinates from OpenStreetMap
+CREATE TABLE IF NOT EXISTS city_coordinates (
+    city VARCHAR(100) PRIMARY KEY,
+    latitude DECIMAL(10,7) NOT NULL,
+    longitude DECIMAL(10,7) NOT NULL
 );
