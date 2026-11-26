@@ -1,3 +1,4 @@
+
 <?php
 
 session_start();
@@ -36,7 +37,7 @@ $matches = get_matches($conn, $_SESSION["user_id"]);
 
             <h1 class="fw-semibold">My matches</h1>
             <p class="text-body-secondary mb-4">
-                Your mutual matches. Chat will be available soon.
+                Choose a match to open the chat.
             </p>
 
             <div class="card overflow-hidden">
@@ -75,9 +76,11 @@ $matches = get_matches($conn, $_SESSION["user_id"]);
 
                         </span>
 
-                        <span class="badge text-bg-light border">
-                            Chat coming soon
-                        </span>
+                        <!-- open the chat with this match -->
+                        <a href="chat.php?match=<?= (int)$match["id"] ?>"
+                           class="btn btn-dark btn-sm">
+                            Open chat
+                        </a>
 
                     </div>
 

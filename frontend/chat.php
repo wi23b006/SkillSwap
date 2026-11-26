@@ -1,108 +1,206 @@
-<?php
-session_start();
-require "../backend/datenbank.php";
 
-// only for logged in users
+<?php
+
+session_start();
+
+require "../backend/datenbank.php";
+require "../backend/matches.php";
+require "../backend/cometchat.php";
+require "../backend/cometchat_config.php";
+
+// only logged in users can open the chat
 if (!isset($_SESSION["user_id"])) {
     header("Location: login.html#login-required");
     exit;
 }
 
-// backend or example data, till backend is connected 
-$example = !file_exists("../backend/chat.php");
-require $example ? "beispieldaten.php" : "../backend/chat.php";
-
-// active link in the navbar
-$page = "chats";
-
-// which match?
+// get the match id from the URL
 $match_id = (int) ($_GET["match"] ?? 0);
+
+// check if this match belongs to the logged in user
 $match = get_match($conn, $_SESSION["user_id"], $match_id);
 
-// users only open their own chats!
+// deny access if there is no matching relationship
 if (!$match) {
     header("Location: chats.php#chat-error");
     exit;
 }
 
-$name = htmlspecialchars($match["display_name"]);
-$messages = get_messages($conn, $match_id);
+// get the matched user's CometChat ID
+$other_user_id = (int) $match["user_id"];
+$other_cometchat_uid = "skillswap_" . $other_user_id;
+
+// create an auth token for the logged in user
+$auth_token = create_cometchat_auth_token(
+    $_SESSION["user_id"]
+);
+
+$page = "chats";
+
+$name = htmlspecialchars(
+    $match["display_name"],
+    ENT_QUOTES,
+    "UTF-8"
+);
+
+// prevent caching of pages containing auth tokens
+header("Cache-Control: no-store, private");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Chat with <?= $name ?> - SkillSwap</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
     <link href="css/style.css" rel="stylesheet">
+
+    <!-- CometChat Widget v2 -->
+    <script
+        defer
+        src="https://cdn.jsdelivr.net/npm/@cometchat/chat-embed@2.x.x/dist/main.js"
+    ></script>
+
 </head>
+
 <body class="bg-body-tertiary d-flex flex-column min-vh-100">
 
     <?php require "navbar.php"; ?>
 
     <main class="container py-5">
+
         <div class="col-lg-8 mx-auto">
 
-            <p><a href="chats.php">Back to my matches</a></p>
-
-            <?php if ($example): ?>
-                <div class="alert alert-secondary">Example data, the chat backend is not connected yet.</div>
-            <?php endif; ?>
+            <p>
+                <a href="chats.php">
+                    Back to my matches
+                </a>
+            </p>
 
             <div class="card">
+
                 <div class="card-body p-4">
 
-                    <h1 class="h4 d-flex align-items-center gap-3 text-break mb-0">
-                        <span class="avatar" aria-hidden="true"><?= htmlspecialchars(mb_substr($match["display_name"], 0, 1)) ?></span>
+                    <h1 class="h4 d-flex align-items-center gap-3 mb-4">
+
+                        <span class="avatar" aria-hidden="true">
+                            <?= htmlspecialchars(
+                                mb_substr(
+                                    $match["display_name"],
+                                    0,
+                                    1
+                                ),
+                                ENT_QUOTES,
+                                "UTF-8"
+                            ) ?>
+                        </span>
+
                         Chat with <?= $name ?>
+
                     </h1>
 
-                    <hr class="my-4">
+                    <hr>
 
-                    <!-- no messages -->
-                    <?php if (count($messages) == 0): ?>
-                        <p class="text-body-secondary text-center py-4">No messages yet. Say hello!</p>
+                    <?php if ($auth_token): ?>
+
+                        <!-- CometChat appears here -->
+                        <div id="cometChatMount"></div>
+
+                    <?php else: ?>
+
+                        <div class="alert alert-danger">
+                            Chat could not be loaded.
+                            Please try again later.
+                        </div>
+
                     <?php endif; ?>
 
-                    <!-- all messages, oldest first -->
-                    <ol class="list-unstyled d-flex flex-column gap-3 mb-4">
-                        <?php foreach ($messages as $message): ?>
-                            <?php $own = $message["sender_id"] == $_SESSION["user_id"]; ?>
-                            <li class="message <?= $own ? "message-own" : "" ?>">
-                                <span class="d-block small fw-semibold"><?= $own ? "You" : $name ?>, <?= date("d M, H:i", strtotime($message["created_at"])) ?></span>
-                                <?= nl2br(htmlspecialchars($message["message"])) ?>
-                            </li>
-                        <?php endforeach; ?>
-                    </ol>
-
-                    <!-- error message -->
-                    <div id="message-error" class="alert alert-danger form-error" role="alert">
-                        Your message was not sent. Please try again!
-                    </div>
-
-                    <!-- sends the message to the backend -->
-                    <form id="write" action="../backend/nachricht.php" method="POST">
-
-                        <input type="hidden" name="match_id" value="<?= $match_id ?>">
-
-                        <label for="message" class="form-label fw-semibold">Your message</label>
-                        <textarea id="message" name="message" class="form-control mb-3" rows="3" maxlength="1000" required></textarea>
-
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a href="chat.php?match=<?= $match_id ?>">Reload messages</a>
-                            <button type="submit" class="btn btn-dark px-4 py-2" <?= $example ? "disabled" : "" ?>>Send</button>
-                        </div>
-                    </form>
-
                 </div>
+
             </div>
 
         </div>
+
     </main>
 
     <?php require "footer.php"; ?>
+
+    <?php if ($auth_token): ?>
+
+    <script type="module">
+
+        const COMETCHAT_WIDGET_CONFIG = {
+
+            // CometChat application
+            appID: <?= json_encode($cometchat_app_id) ?>,
+            region: <?= json_encode($cometchat_region) ?>,
+
+            // secure login using our PHP backend
+            mode: "authToken",
+
+            authToken: <?= json_encode(
+                $auth_token,
+                JSON_HEX_TAG |
+                JSON_HEX_AMP |
+                JSON_HEX_APOS |
+                JSON_HEX_QUOT
+            ) ?>,
+
+            // widget language
+            language: "en-US",
+
+            // embedded chat layout
+            mount: "#cometChatMount",
+            width: "100%",
+            height: "650px",
+            isDocked: false,
+
+            // open the matched user's conversation
+            chatType: "user",
+
+            defaultChatID: <?= json_encode(
+                $other_cometchat_uid
+            ) ?>,
+
+            // do not automatically open another conversation
+            autoOpenFirstItem: false
+        };
+
+        // initialize CometChat
+        window.addEventListener("load", () => {
+
+            if (
+                typeof CometChatApp === "undefined" ||
+                !CometChatApp.CometChatAuth
+            ) {
+                document.getElementById(
+                    "cometChatMount"
+                ).textContent = "CometChat could not be loaded.";
+
+                return;
+            }
+
+            CometChatApp.CometChatAuth.start(
+                COMETCHAT_WIDGET_CONFIG
+            );
+
+        });
+
+    </script>
+
+    <?php endif; ?>
 
 </body>
 </html>

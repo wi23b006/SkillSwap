@@ -23,3 +23,22 @@ function get_matches($conn, $user_id) {
     // return all matches
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
+
+
+// get a specific match and check access
+function get_match($conn, $user_id, $match_id) {
+
+    // get all matches of the logged in user
+    $matches = get_matches($conn, $user_id);
+
+    // find the requested match
+    foreach ($matches as $match) {
+
+        if ($match["id"] == $match_id) {
+            return $match;
+        }
+    }
+
+    // user does not belong to this match
+    return null;
+}

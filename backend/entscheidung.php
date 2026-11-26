@@ -4,6 +4,7 @@
 session_start();
 require "datenbank.php";
 require "matching.php";
+require "cometchat.php";
 
 // check if the user is logged in
 if (!isset($_SESSION["user_id"])) {
@@ -84,6 +85,26 @@ if ($decision == "like") {
 
         $stmt->bind_param("ii", $user1, $user2);
         $stmt->execute();
+
+        // get the match id
+        $stmt = $conn->prepare(
+            "SELECT id FROM matches
+             WHERE user1_id = ? AND user2_id = ?"
+        );
+
+        $stmt->bind_param("ii", $user1, $user2);
+        $stmt->execute();
+
+        $match = $stmt->get_result()->fetch_assoc();
+
+        // connect matched users in CometChat
+        if ($match) {
+            $synced = sync_cometchat_match($conn, $match["id"]);
+
+            if (!$synced) {
+                error_log("CometChat sync failed for match " . $match["id"]);
+            }
+        }
 
         // show match notification
         header("Location: ../frontend/match.php#new-match");
